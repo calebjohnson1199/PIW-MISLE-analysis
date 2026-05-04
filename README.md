@@ -5,11 +5,16 @@ This project takes raw Coast Guard after-action Situation Reports (SITREPS) and 
 First File: BERTOPIC_misle_model.py
 This file is used to provide insight for the BERTOPIC labeling functions.
 Input
+
 •	Narratives_With_Labels_2Feb2026_fixed.json: The raw dataset with 10,000 + MISLE incident narratives
 Output
+
 •	misle_cleaned.parquet: extra spaces, numbers, and location names are stripped from the narratives – this was necessary because before this, BERTOPIC kept clustering based on geographic location, not PIW cases. This was only used for the Topic Modeling, not the supervised learning. There was no preprocessing done on the data that was put into DistilBERT.
+
 •	bertopic_model/: this is the trained bertopic model
+
 •	bertopic_topics.npy: contains the topic assignment for every document
+
 •	topic_piw_enrichment.csv: using only narratives with human labels, this csv file has every topic and the percentage of that topic that is positive PIW 
 
 
