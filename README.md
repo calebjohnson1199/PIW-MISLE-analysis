@@ -80,7 +80,8 @@ Output:
 •	distilbert_finetuned_model/: The best-checkpoint DistilBERT model fine-tuned on the 80% gold-labeled training split (Stage 2). The best checkpoint is selected by highest F1 score across 10 epochs. Also prints a threshold sweep table and classification report evaluated against the 20% gold held-out test split.
 
 Sixth File: predict.py 
-Input
+
+Input:
 
 •	weak_labels.parquet: Used to reconstruct the same 20% gold held-out test split (via the same random seed as transformer_finetune.py)
 
