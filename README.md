@@ -3,11 +3,14 @@ This project takes raw Coast Guard after-action Situation Reports (SITREPS) and 
 
 
 First File: BERTOPIC_misle_model.py
+
 This file is used to provide insight for the BERTOPIC labeling functions.
-Input
+
+Input:
 
 •	Narratives_With_Labels_2Feb2026_fixed.json: The raw dataset with 10,000 + MISLE incident narratives
-Output
+
+Output:
 
 •	misle_cleaned.parquet: extra spaces, numbers, and location names are stripped from the narratives – this was necessary because before this, BERTOPIC kept clustering based on geographic location, not PIW cases. This was only used for the Topic Modeling, not the supervised learning. There was no preprocessing done on the data that was put into DistilBERT.
 
@@ -20,20 +23,24 @@ Output
 
 
 Second File: LabelingFunctions.py
+
 This file takes the BERTOPIC data and creates Learning Functions so that Snorkel can output weak_labels for every SITREP.
-Input
+
+Input:
 
 •	Narratives_With_Labels_2Feb2026_fixed.json: The raw dataset with 10,000+ MISLE incident narratives
 
 •	bertopic_topics.npy: Topic assignment for every document (produced by BERTOPIC_misle_model.py)
 
-Output
+Output:
 
 •	weak_labels.parquet: The full dataset with two new columns: weak_label (Snorkel LabelModel's hard prediction: PIW, NOT_PIW, or ABSTAIN) and weak_prob_piw (soft probability of PIW). This is the training signal passed to DistilBERT since most narratives have no human label. The file also prints an LF analysis table showing coverage, accuracy, and conflict rates for each labeling function evaluated against the gold labels.
 
 Third File: classifier.py
+
 This file is multiple classical machine learning models
-Input
+
+Input:
 
 •	embeddings.npy: DistilBERT embeddings for every narrative
 
@@ -46,8 +53,10 @@ Output
 
 
 Fourth File: transformer_classifier.py
+
 This file trains the DistilBERT model on the uncleaned SITREPS and their weak labels
-Input
+
+Input:
 
 •	weak_labels.parquet: The uncleaned SITREPS with Snorkel-generated weak labels and PIW probabilities
 Output
@@ -57,13 +66,16 @@ Output
 
 
 Fifth File: transformer_finetune.py
+
 This file finetunes the Stage 1 model using the weak labels and human gold labels.
-Input
+
+Input:
 
 •	weak_labels.parquet: The dataset with Snorkel-generated weak labels and human gold labels
 
 •	distilbert_piw_model/: The Stage 1 model pretrained on weak labels
-Output
+
+Output:
 
 •	distilbert_finetuned_model/: The best-checkpoint DistilBERT model fine-tuned on the 80% gold-labeled training split (Stage 2). The best checkpoint is selected by highest F1 score across 10 epochs. Also prints a threshold sweep table and classification report evaluated against the 20% gold held-out test split.
 
@@ -74,5 +86,6 @@ Input
 
 •	distilbert_finetuned_model/: The final fine-tuned model
 
-Output
+Output:
+
 •	Console output showing 5 random PIW and 5 random NOT_PIW example predictions with true vs. predicted labels, plus a full confusion matrix, accuracy, precision, recall, and F1 on the complete held-out gold set. A threshold sweep plot (threshold_curve.png) is also generated
